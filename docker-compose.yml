@@ -1,0 +1,15 @@
+services:
+  volleyball-stats:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: volleyball-stats
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-change-this-secret}
+      TZ: ${TZ:-America/Los_Angeles}
+    volumes:
+      - ./data:/app/data
+      - ./static/uploads:/app/static/uploads
