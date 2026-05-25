@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h1>Players</h1>
+  <form class="grid-form" method="post" enctype="multipart/form-data" action="{{ url_for('add_player') }}">
+    <label>Name <input required name="name" placeholder="Player name"></label>
+    <label>Number <input name="number" placeholder="12"></label>
+    <label>Position <input name="position" placeholder="OH, S, MB, L"></label>
+    <label>Photo <input type="file" name="photo" accept="image/*"></label>
+    <button>Add player</button>
+  </form>
+  <div class="player-list">
+  {% for p in players %}
+    <div class="player-mini">
+      {% if p.photo %}<img src="{{ url_for('static', filename='uploads/' ~ p.photo) }}" alt="{{ p.name }}">{% else %}<div class="avatar">{{ p.name[:1] }}</div>{% endif %}
+      <div><strong>#{{ p.number }} {{ p.name }}</strong><br><span>{{ p.position }}</span></div>
+      <form method="post" action="{{ url_for('delete_player', player_id=p.id) }}"><button class="danger">Remove</button></form>
+    </div>
+  {% endfor %}
+  </div>
+</section>
+<section class="card">
+  <h1>Stat Categories</h1>
+  <form class="inline-form" method="post" action="{{ url_for('add_category') }}">
+    <input required name="name" placeholder="Reception Error">
+    <button>Add category</button>
+  </form>
+  <div class="chips">
+    {% for c in categories %}
+      <form method="post" action="{{ url_for('delete_category', category_id=c.id) }}" class="chip">{{ c.name }} <button title="Hide">×</button></form>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

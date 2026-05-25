@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h1>Match Summary: {{ match.opponent or 'Untitled Match' }}</h1>
+  <h2>Set Scores</h2>
+  {% for s in sets %}<p>Set {{ s.set_number }}: {% if s.completed %}{{ s.our_score }} - {{ s.their_score }}{% else %}in progress{% endif %}</p>{% endfor %}
+  <h2>Stats</h2>
+  <table><thead><tr><th>#</th><th>Player</th><th>Position</th><th>Stat</th><th>Total</th></tr></thead><tbody>
+  {% for r in rows %}<tr><td>{{ r.number }}</td><td>{{ r.name }}</td><td>{{ r.position }}</td><td>{{ r.category }}</td><td>{{ r.total }}</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="match-head">
+  <div><h1>{{ match.opponent or 'Untitled Match' }}</h1><p>Set {{ active_set.set_number }} · {{ match.location or 'No location' }}</p></div>
+  <div class="actions"><a class="button" href="{{ url_for('summary', match_id=match.id) }}">Summary</a><form method="post" action="{{ url_for('complete_match', match_id=match.id) }}"><button>Complete Match</button></form></div>
+</div>
+<section class="card">
+  <h2>Record Stat</h2>
+  {% if not players %}<p>Add players in Settings first.</p>{% endif %}
+  <div class="player-grid">
+    {% for p in players %}
+    <details class="player-card">
+      <summary>
+        {% if p.photo %}<img src="{{ url_for('static', filename='uploads/' ~ p.photo) }}" alt="{{ p.name }}">{% else %}<div class="avatar big">{{ p.name[:1] }}</div>{% endif %}
+        <strong>#{{ p.number }} {{ p.name }}</strong><span>{{ p.position }}</span>
+      </summary>
+      <div class="stat-buttons">
+        {% for c in categories %}
+        <form method="post" action="{{ url_for('add_stat', match_id=match.id) }}">
+          <input type="hidden" name="set_id" value="{{ active_set.id }}">
+          <input type="hidden" name="player_id" value="{{ p.id }}">
+          <input type="hidden" name="category_id" value="{{ c.id }}">
+          <button>{{ c.name }} <span>{{ stat_map.get(p.id, {}).get(c.name, 0) }}</span></button>
+        </form>
+        {% endfor %}
+      </div>
+    </details>
+    {% endfor %}
+  </div>
+</section>
+<section class="card split">
+  <div>
+    <h2>Sets</h2>
+    {% for s in sets %}<p>Set {{ s.set_number }}: {% if s.completed %}{{ s.our_score }} - {{ s.their_score }}{% else %}in progress{% endif %}</p>{% endfor %}
+  </div>
+  <form method="post" action="{{ url_for('next_set', match_id=match.id) }}" onsubmit="return confirm('Save this score and move to the next set?')">
+    <h2>Next Set</h2>
+    <input type="hidden" name="set_id" value="{{ active_set.id }}">
+    <label>Our score <input required type="number" name="our_score" min="0"></label>
+    <label>Their score <input required type="number" name="their_score" min="0"></label>
+    <button>Move to next set</button>
+  </form>
+</section>
+{% endblock %}

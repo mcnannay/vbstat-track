@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h1>New Match</h1>
+  <form class="grid-form" method="post" action="{{ url_for('create_match') }}">
+    <label>Opponent <input name="opponent" placeholder="Central High"></label>
+    <label>Location <input name="location" placeholder="Home / Away"></label>
+    <label class="full">Notes <textarea name="notes" placeholder="Tournament, lineup notes, etc."></textarea></label>
+    <button>Create new match</button>
+  </form>
+</section>
+<section class="card">
+  <h1>Old Matches</h1>
+  {% if matches %}
+    <div class="match-list">
+    {% for m in matches %}
+      <a class="match-row" href="{{ url_for('match_detail', match_id=m.id) }}">
+        <strong>{{ m.opponent or 'Untitled Match' }}</strong>
+        <span>{{ m.started_at.replace('T', ' ') }}</span>
+        <span>{{ m.location or 'No location' }}</span>
+        <span>{{ m.total_stats }} stats</span>
+        <span class="pill">{{ 'Complete' if m.completed else 'In progress' }}</span>
+      </a>
+    {% endfor %}
+    </div>
+  {% else %}
+    <p>No matches yet. Create one above.</p>
+  {% endif %}
+</section>
+{% endblock %}
